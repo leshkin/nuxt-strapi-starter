@@ -2,18 +2,18 @@
 
 ## Development
 
-1. Create a copy of ".env.example" named ".env" and change the variable values.
+1. Create a copy of `.env.example` named `.env` and change the variable values.
 
-2. Build frontend
+2. Build
 
 ```
+# frontend
 cd frontend
 docker build -t starter-frontend .
-```
 
-3. Build backend
+cd ..
 
-```
+# backend
 cd backend
 NODE_ENV=production npm run build
 docker build -t starter-backend .
@@ -25,7 +25,10 @@ docker build -t starter-backend .
 docker compose -f docker-compose.dev.yml up
 ```
 
-5. Open links:
-   http://starter.localhost - website
-   http://api.starter.localhost - Strapi API
-   http://api.starter.localhost/admin - Strapi admin panel
+5. Open links
+
+```
+http://starter.localhost # website
+http://api.starter.localhost # Strapi API
+http://api.starter.localhost/admin # Strapi admin panel
+```
