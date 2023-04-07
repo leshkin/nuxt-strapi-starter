@@ -3,5 +3,15 @@ export default defineNuxtConfig({
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/strapi'
-  ]
+  ],
+
+  runtimeConfig: {
+    public: {
+      API_URL: ''
+    }
+  },
+
+  css: [
+    '~/assets/main.css',
+  ],
 })
