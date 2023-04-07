@@ -5,12 +5,6 @@ export default defineNuxtConfig({
     '@nuxtjs/strapi'
   ],
 
-  runtimeConfig: {
-    public: {
-      API_URL: ''
-    }
-  },
-
   css: [
     '~/assets/main.css',
   ],

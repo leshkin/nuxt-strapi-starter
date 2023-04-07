@@ -1,6 +1,6 @@
 # Starter for Nuxt 3, Strapi 4 and Traefik 2
 
-Tested on a $6/month VPS from DigitalOcean with 1 GiB of memory. [Try it yourself.](https://m.do.co/c/28d0463092e4)
+Tested on a $6/month VPS from DigitalOcean with 1 GiB of memory. [Try it yourself!](https://m.do.co/c/28d0463092e4)
 
 ## Local start
 
