@@ -1,0 +1,69 @@
+version: '3.3'
+
+services:
+  traefik:
+    image: traefik:v2.9
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.web.http.redirections.entryPoint.to=websecure
+      - --entrypoints.web.http.redirections.entryPoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      - --certificatesresolvers.myresolver.acme.tlschallenge=true
+      - --certificatesresolvers.myresolver.acme.email=admin@starter.tld
+      - --certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./letsencrypt:/letsencrypt
+
+  frontend:
+    image: starter-frontend
+    environment:
+      - NUXT_PUBLIC_API_URL=${NUXT_PUBLIC_API_URL}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.rule=Host(`starter.tld`) || Host(`www.starter.tld`)
+      - traefik.http.routers.frontend.entrypoints=websecure
+      - traefik.http.routers.frontend.tls.certresolver=myresolver
+      - traefik.http.routers.frontend.middlewares=www
+      - traefik.http.middlewares.www.redirectregex.regex=^https://www.starter.tld/(.*)
+      - traefik.http.middlewares.www.redirectregex.replacement=https://starter.tld/$$1
+      - traefik.http.middlewares.www.redirectregex.permanent=true
+  
+  backend:
+    image: starter-backend
+    volumes:
+      - ./uploads:/app/public/uploads 
+    environment:
+      - APP_KEYS=${APP_KEYS}
+      - API_TOKEN_SALT=${API_TOKEN_SALT}
+      - ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_HOST=${DATABASE_HOST}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend.rule=Host(`api.starter.tld`)
+      - traefik.http.routers.backend.entrypoints=websecure
+      - traefik.http.routers.backend.tls.certresolver=myresolver
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14.5-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    labels:
+      - traefik.enable=false

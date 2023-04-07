@@ -1,0 +1,59 @@
+version: '3.3'
+
+services:
+  traefik:
+    image: traefik:v2.9
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --api.insecure=true
+    ports:
+      - 80:80
+      - 8080:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
+  frontend:
+    image: starter-frontend
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.frontend.rule=Host(`starter.localhost`) || Host(`www.starter.localhost`)
+      - traefik.http.routers.frontend.entrypoints=web
+      - traefik.http.routers.frontend.middlewares=www
+      - traefik.http.middlewares.www.redirectregex.regex=^http://www.starter.localhost/(.*)
+      - traefik.http.middlewares.www.redirectregex.replacement=http://starter.localhost/$$1
+      - traefik.http.middlewares.www.redirectregex.permanent=true
+  
+  backend:
+    image: starter-backend
+    volumes:
+      - ./uploads:/app/public/uploads 
+    environment:
+      - APP_KEYS=${APP_KEYS}
+      - API_TOKEN_SALT=${API_TOKEN_SALT}
+      - ADMIN_JWT_SECRET=${ADMIN_JWT_SECRET}
+      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_USERNAME=${DATABASE_USERNAME}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_HOST=${DATABASE_HOST}
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.backend.rule=Host(`api.starter.localhost`)
+      - traefik.http.routers.backend.entrypoints=web
+    depends_on:
+      - db
+
+  db:
+    image: postgres:14.5-alpine
+    environment:
+      POSTGRES_USER: ${DATABASE_USERNAME}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    labels:
+      - traefik.enable=false
