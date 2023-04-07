@@ -27,8 +27,6 @@ docker compose -f docker-compose.dev.yml up
 
 5. Open links
 
-```
-http://starter.localhost # website
-http://api.starter.localhost # Strapi API
-http://api.starter.localhost/admin # Strapi admin panel
-```
+- http://starter.localhost - main page
+- http://api.starter.localhost - Strapi API
+- http://api.starter.localhost/admin - Strapi admin panel
