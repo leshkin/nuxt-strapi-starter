@@ -12,9 +12,11 @@ Tested on a $6/month VPS from DigitalOcean with 1 GiB of memory. [Try it yoursel
 
 ## Prepare
 
+1. Clone the repository
+
 1. Create a copy of `.env.example` named `.env` and change credentials. Repeat for `frontend/.env.example` and `backend/.env.example`.
 
-2. Install packages for frontend and backend
+1. Install packages for frontend and backend
 
 ```
 cd frontend
