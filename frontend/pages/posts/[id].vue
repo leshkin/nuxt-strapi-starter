@@ -7,9 +7,9 @@
 
 <script setup>
 const route = useRoute()
-const { findOne } = useStrapi()
 const post = ref(null)
+const { findOne } = useStrapi()
 
-const response = await findOne('posts', route.params.id)
-post.value = response.data
+const { data } = await findOne('posts', route.params.id)
+post.value = data
 </script>

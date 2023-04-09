@@ -5,9 +5,9 @@
 </template>
 
 <script setup>
-const { find } = useStrapi()
 const posts = ref([])
+const { find } = useStrapi()
 
-const response = await find('posts')
-posts.value = response.data
+const { data } = await find('posts')
+posts.value = data
 </script>

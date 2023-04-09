@@ -7,7 +7,7 @@ COPY . .
 
 RUN npm run build
 
-# Nuxt 3 production
+# Nuxt 3 production run
 FROM node:lts
 
 WORKDIR /app
