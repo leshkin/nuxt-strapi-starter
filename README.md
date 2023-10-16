@@ -22,8 +22,10 @@ Tested on a $6/month VPS from DigitalOcean with 1 GiB of memory. [Try it yoursel
 cd frontend
 npm i
 cd ..
+
 cd backend
 npm i
+cd ..
 ```
 
 3. Run PostgreSQL with Docker Compose
@@ -63,14 +65,12 @@ cd ..
 cd backend
 docker build -t starter-backend .
 cd..
-
 ```
 
 4. Run
 
 ```
 docker compose -f docker-compose.dev.yml up
-
 ```
 
 5. Open links
